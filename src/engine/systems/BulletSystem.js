@@ -9,12 +9,13 @@ export class BulletSystem {
         const p = entity.get(Position);
         b.life -= dt;
         const canvas = this.game.ctx.canvas;
+        const cam = this.game.camera || { x: 0, y: 0 };
         if (
           b.life <= 0 ||
-          p.x < -10 ||
-          p.y < -10 ||
-          p.x > canvas.width + 10 ||
-          p.y > canvas.height + 10
+          p.x < cam.x - 10 ||
+          p.y < cam.y - 10 ||
+          p.x > cam.x + canvas.width + 10 ||
+          p.y > cam.y + canvas.height + 10
         ) {
           this.game.removeEntity(entity);
         }

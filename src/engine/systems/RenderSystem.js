@@ -14,11 +14,12 @@ export class RenderSystem {
     const cam = this.game.camera || { x: 0, y: 0 };
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const entity of this.game.entities) {
-      if (entity.has(Position) && entity.has(Sprite)) {
-        const p = entity.get(Position);
+      if (!entity.has(Position)) continue;
+      const p = entity.get(Position);
+      const x = p.x - cam.x;
+      const y = p.y - cam.y;
+      if (entity.has(Sprite)) {
         const s = entity.get(Sprite);
-        const x = p.x - cam.x;
-        const y = p.y - cam.y;
         if (s.emoji) {
           ctx.font = `${s.size}px sans-serif`;
           ctx.textAlign = 'center';
@@ -39,6 +40,11 @@ export class RenderSystem {
           ctx.fillStyle = 'green';
           ctx.fillRect(bx, by, barWidth * (h.current / h.max), barHeight);
         }
+      } else {
+        ctx.font = '20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🌲', x, y);
       }
     }
   }
