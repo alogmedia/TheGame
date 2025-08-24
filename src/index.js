@@ -38,6 +38,7 @@ const hud = {
 const startMenu = document.getElementById('start-menu');
 const startBtn = document.getElementById('start-btn');
 const levelMenu = document.getElementById('level-menu');
+const levelOptions = document.getElementById('level-options');
 const stageSelect = document.getElementById('stage-select');
 const coinsDisplay = document.getElementById('coins');
 
@@ -49,26 +50,55 @@ function shuffle(arr) {
 }
 
 const abilities = [
-  { name: 'More Life', apply: p => { const h = p.get(Health); h.max += 20; h.current += 20; } },
-  { name: 'Faster Shots', apply: p => { p.get(PlayerControlled).fireRate += 2; } },
-  { name: 'Stronger Shots', apply: p => { const pc = p.get(PlayerControlled); pc.bulletDamage += 1; pc.bulletSize += 1; } },
-  { name: 'Multi Shot', apply: p => { const pc = p.get(PlayerControlled); pc.shotCount += 1; } },
+  {
+    name: 'More Life',
+    icon: '❤️',
+    desc: 'Increase max health by 20.',
+    apply: p => {
+      const h = p.get(Health);
+      h.max += 20;
+      h.current += 20;
+    }
+  },
+  {
+    name: 'Faster Shots',
+    icon: '⚡',
+    desc: 'Shoot more rapidly.',
+    apply: p => { p.get(PlayerControlled).fireRate += 2; }
+  },
+  {
+    name: 'Stronger Shots',
+    icon: '🔥',
+    desc: 'Increase bullet damage and size.',
+    apply: p => {
+      const pc = p.get(PlayerControlled);
+      pc.bulletDamage += 1;
+      pc.bulletSize += 1;
+    }
+  },
+  {
+    name: 'Multi Shot',
+    icon: '🎯',
+    desc: 'Fire an additional bullet.',
+    apply: p => { p.get(PlayerControlled).shotCount += 1; }
+  },
 ];
 
 function handleLevelUp(player) {
   game.running = false;
-  levelMenu.innerHTML = '';
+  levelOptions.innerHTML = '';
   levelMenu.classList.remove('hidden');
   const options = shuffle([...abilities]).slice(0, 3);
   options.forEach(ab => {
     const btn = document.createElement('button');
-    btn.textContent = ab.name;
+    btn.className = 'level-option';
+    btn.innerHTML = `<span class="icon">${ab.icon}</span><div class="info"><div class="name">${ab.name}</div><div class="desc">${ab.desc}</div></div>`;
     btn.onclick = () => {
       ab.apply(player);
       levelMenu.classList.add('hidden');
       game.start();
     };
-    levelMenu.appendChild(btn);
+    levelOptions.appendChild(btn);
   });
 }
 
@@ -100,7 +130,7 @@ game.addSystem(new RenderSystem());
 const player = new Entity()
   .add(new Position(canvas.width / 2, canvas.height / 2))
   .add(new Velocity())
-  .add(new Sprite(30, null, '🧍'))
+  .add(new Sprite(40, null, '🧍'))
   .add(new PlayerControlled())
   .add(new Experience())
   .add(new Health(100))

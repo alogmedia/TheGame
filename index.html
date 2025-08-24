@@ -5,16 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Game</title>
   <style>
-    body { margin: 0; background: #111; }
-    canvas { display: block; margin: 0 auto; background: #222; width: 100vw; height: 100vh; }
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #222;
+      width: 100vw;
+      height: 100vh;
+    }
     #hud { position: absolute; bottom: 0; left: 0; width: 100%; }
     .bar { height: 10px; background: #444; margin-bottom: 5px; }
     .fill { height: 100%; width: 100%; background: green; }
-    #xp-fill { background: blue; }
-    #stats { color: white; font-family: sans-serif; margin-top: 5px; }
-    .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); color: white; }
+    #xp-fill { background: linear-gradient(90deg, #4fc3f7, #0288d1); }
+    #stats { margin-top: 5px; }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+    }
     .hidden { display: none; }
-    #level-menu button { margin: 5px; }
+    button {
+      background: #556;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #667; }
+    /* Level up menu */
+    #level-menu .level-box {
+      background: #3a3f55;
+      padding: 20px;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+    }
+    #level-menu h2 { margin-top: 0; }
+    #level-options { margin-top: 10px; width: 100%; }
+    .level-option {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #556;
+      border: 1px solid #888;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: left;
+      color: #fff;
+      font-size: 16px;
+    }
+    .level-option:hover { background: #667; }
+    .level-option .icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    .level-option .name { font-weight: bold; }
+    .level-option .desc { font-size: 14px; opacity: 0.9; }
+    .level-tip { margin-top: 10px; font-size: 12px; opacity: 0.8; }
   </style>
 </head>
 <body>
@@ -30,7 +96,13 @@
     </label>
     <button id="start-btn">Start</button>
   </div>
-  <div id="level-menu" class="overlay hidden"></div>
+  <div id="level-menu" class="overlay hidden">
+    <div class="level-box">
+      <h2>Level Up!</h2>
+      <div id="level-options"></div>
+      <div class="level-tip">increase your luck for a chance to get 4 choices</div>
+    </div>
+  </div>
   <div id="hud">
     <div class="bar"><div id="xp-fill" class="fill"></div></div>
     <div id="stats"></div>
