@@ -15,7 +15,6 @@ export class EnemySpawnerSystem {
   }
   update(dt) {
     this.timer -= dt;
-    const spawnInterval = Math.max(0.2, this.interval - this.game.elapsed / 120);
     const spawnInterval = Math.max(0.3, this.interval - this.game.elapsed / 90);
     if (this.timer <= 0) {
       this.timer = spawnInterval;
