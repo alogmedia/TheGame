@@ -33,17 +33,38 @@ const input = new Input(canvas);
 const hud = {
   xp: document.getElementById('xp-fill'),
   stats: document.getElementById('stats'),
+  coins: document.getElementById('coin-count'),
+  score: document.getElementById('score'),
 };
 
 const startMenu = document.getElementById('start-menu');
 const startBtn = document.getElementById('start-btn');
+const newBtn = document.getElementById('new-btn');
+const shopBtn = document.getElementById('shop-btn');
+const scoreboardBtn = document.getElementById('scoreboard-btn');
 const levelMenu = document.getElementById('level-menu');
 const levelOptions = document.getElementById('level-options');
 const stageSelect = document.getElementById('stage-select');
 const coinsDisplay = document.getElementById('coins');
-
+const shopMenu = document.getElementById('shop-menu');
+const shopItemsDiv = document.getElementById('shop-items');
+const shopClose = document.getElementById('shop-close');
+const scoreboardMenu = document.getElementById('scoreboard-menu');
+const scoreList = document.getElementById('score-list');
+const scoreClose = document.getElementById('score-close');
 let coins = parseInt(localStorage.getItem('coins') || '0');
+let purchases = JSON.parse(localStorage.getItem('purchases') || '{}');
+let scores = JSON.parse(localStorage.getItem('scores') || '[]');
 coinsDisplay.textContent = `Coins: ${coins}`;
+game.coins = coins;
+game.score = 0;
+game.onCoinsChange = c => {
+  coins = c;
+  coinsDisplay.textContent = `Coins: ${coins}`;
+  if (hud.coins) hud.coins.textContent = `Coins: ${coins}`;
+  localStorage.setItem('coins', coins);
+};
+if (hud.coins) hud.coins.textContent = `Coins: ${coins}`;
 
 function shuffle(arr) {
   return arr.sort(() => Math.random() - 0.5);
@@ -84,6 +105,74 @@ const abilities = [
   },
 ];
 
+const shopItems = [
+  {
+    id: 'health',
+    name: '+20 Max Health',
+    cost: 50,
+    apply: p => {
+      const h = p.get(Health);
+      h.max += 20;
+      h.current += 20;
+    }
+  },
+  {
+    id: 'damage',
+    name: '+1 Bullet Damage',
+    cost: 50,
+    apply: p => {
+      p.get(PlayerControlled).bulletDamage += 1;
+    }
+  },
+  {
+    id: 'firerate',
+    name: '+1 Fire Rate',
+    cost: 50,
+    apply: p => {
+      p.get(PlayerControlled).fireRate += 1;
+    }
+  }
+];
+
+function openShop() {
+  shopItemsDiv.innerHTML = '';
+  shopItems.forEach(item => {
+    const btn = document.createElement('button');
+    const owned = purchases[item.id];
+    btn.textContent = owned ? `${item.name} (Bought)` : `${item.name} - ${item.cost}`;
+    btn.disabled = owned || game.coins < item.cost;
+    btn.onclick = () => {
+      if (game.coins >= item.cost && !purchases[item.id]) {
+        game.coins -= item.cost;
+        if (game.onCoinsChange) game.onCoinsChange(game.coins);
+        purchases[item.id] = true;
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+        item.apply(player);
+        btn.textContent = `${item.name} (Bought)`;
+        btn.disabled = true;
+      }
+    };
+    shopItemsDiv.appendChild(btn);
+  });
+  shopMenu.classList.remove('hidden');
+}
+shopBtn.onclick = openShop;
+shopClose.onclick = () => shopMenu.classList.add('hidden');
+
+function updateScoreboard() {
+  scoreList.innerHTML = '';
+  scores.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${s}`;
+    scoreList.appendChild(li);
+  });
+}
+scoreboardBtn.onclick = () => {
+  updateScoreboard();
+  scoreboardMenu.classList.remove('hidden');
+};
+scoreClose.onclick = () => scoreboardMenu.classList.add('hidden');
+
 function handleLevelUp(player) {
   game.running = false;
   levelOptions.innerHTML = '';
@@ -103,12 +192,15 @@ function handleLevelUp(player) {
 }
 
 game.onStageComplete = () => {
-  coins += 100;
-  coinsDisplay.textContent = `Coins: ${coins}`;
-  localStorage.setItem('coins', coins);
+  game.coins += 100;
+  if (game.onCoinsChange) game.onCoinsChange(game.coins);
 };
 
 game.onGameOver = () => {
+  scores.push(game.score);
+  scores.sort((a, b) => b - a);
+  scores = scores.slice(0, 10);
+  localStorage.setItem('scores', JSON.stringify(scores));
   startBtn.textContent = 'Restart';
   startMenu.classList.remove('hidden');
   game.running = false;
@@ -136,6 +228,10 @@ const player = new Entity()
   .add(new Health(100))
   .add(new Stats());
 
+for (const item of shopItems) {
+  if (purchases[item.id]) item.apply(player);
+}
+
 game.addEntity(player);
 
 startBtn.addEventListener('click', () => {
@@ -145,6 +241,15 @@ startBtn.addEventListener('click', () => {
     const duration = parseInt(stageSelect.value) * 60;
     stageSystem.setDuration(duration);
     startMenu.classList.add('hidden');
+    game.score = 0;
+    if (hud.score) hud.score.textContent = 'Score: 0';
     game.start();
   }
+});
+
+newBtn.addEventListener('click', () => {
+  localStorage.removeItem('coins');
+  localStorage.removeItem('purchases');
+  localStorage.removeItem('scores');
+  window.location.reload();
 });

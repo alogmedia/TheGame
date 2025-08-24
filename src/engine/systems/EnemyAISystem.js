@@ -18,6 +18,13 @@ export class EnemyAISystem {
       const speed = Math.hypot(ev.x, ev.y);
       ev.x = (dx / dist) * speed;
       ev.y = (dy / dist) * speed;
+      const ec = enemy.get(Enemy);
+      if (!ec.persistent) {
+        const maxDist = 1000;
+        if (Math.abs(ep.x - pp.x) > maxDist || Math.abs(ep.y - pp.y) > maxDist) {
+          this.game.removeEntity(enemy);
+        }
+      }
     }
   }
 }

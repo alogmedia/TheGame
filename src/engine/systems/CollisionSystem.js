@@ -4,6 +4,7 @@ import { Bullet } from '../components/Bullet.js';
 import { Enemy } from '../components/Enemy.js';
 import { PlayerControlled } from '../components/PlayerControlled.js';
 import { XPGem } from '../components/XPGem.js';
+import { Coin } from '../components/Coin.js';
 import { Entity } from '../Entity.js';
 import { Health } from '../components/Health.js';
 import { Stats } from '../components/Stats.js';
@@ -35,6 +36,14 @@ export class CollisionSystem {
                 .add(new Sprite(6, 'green'))
                 .add(new XPGem());
               this.game.addEntity(gem);
+              if (Math.random() < 0.3) {
+                const coin = new Entity()
+                  .add(new Position(ep.x, ep.y))
+                  .add(new Sprite(6, 'yellow', '💰'))
+                  .add(new Coin());
+                this.game.addEntity(coin);
+              }
+              this.game.score = (this.game.score || 0) + 1;
             }
           } else {
             this.game.removeEntity(enemy);
@@ -43,6 +52,14 @@ export class CollisionSystem {
               .add(new Sprite(6, 'green'))
               .add(new XPGem());
             this.game.addEntity(gem);
+            if (Math.random() < 0.3) {
+              const coin = new Entity()
+                .add(new Position(ep.x, ep.y))
+                .add(new Sprite(6, 'yellow', '💰'))
+                .add(new Coin());
+              this.game.addEntity(coin);
+            }
+            this.game.score = (this.game.score || 0) + 1;
           }
           break;
         }

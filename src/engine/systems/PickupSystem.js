@@ -3,6 +3,7 @@ import { Sprite } from '../components/Sprite.js';
 import { XPGem } from '../components/XPGem.js';
 import { Experience } from '../components/Experience.js';
 import { PlayerControlled } from '../components/PlayerControlled.js';
+import { Coin } from '../components/Coin.js';
 
 export class PickupSystem {
   constructor(onLevelUp) {
@@ -31,6 +32,17 @@ export class PickupSystem {
         }
         if (leveled && this.onLevelUp) this.onLevelUp(player);
         this.game.removeEntity(gem);
+      }
+    }
+
+    for (const coin of entities.filter(e => e.has(Coin) && e.has(Position))) {
+      const cp = coin.get(Position);
+      const cs = coin.get(Sprite);
+      const dist = Math.hypot(pp.x - cp.x, pp.y - cp.y);
+      if (dist < ps.size / 2 + cs.size / 2) {
+        this.game.coins = (this.game.coins || 0) + coin.get(Coin).value;
+        if (this.game.onCoinsChange) this.game.onCoinsChange(this.game.coins);
+        this.game.removeEntity(coin);
       }
     }
   }

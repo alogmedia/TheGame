@@ -16,5 +16,11 @@ export class HUDSystem {
     if (stats) {
       this.hud.stats.textContent = `Damage Done: ${stats.damageDone} Damage Taken: ${stats.damageTaken}`;
     }
+    if (this.hud.coins) {
+      this.hud.coins.textContent = `Coins: ${this.game.coins || 0}`;
+    }
+    if (this.hud.score !== undefined) {
+      this.hud.score.textContent = `Score: ${this.game.score || 0}`;
+    }
   }
 }
