@@ -4,6 +4,7 @@
   "description": "Starter codebase for a roguelike shoot 'em up browser game",
   "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "node --test"
   }
 }
