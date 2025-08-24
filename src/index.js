@@ -4,12 +4,14 @@ import { Position } from './engine/components/Position.js';
 import { Velocity } from './engine/components/Velocity.js';
 import { Sprite } from './engine/components/Sprite.js';
 import { PlayerControlled } from './engine/components/PlayerControlled.js';
+import { Experience } from './engine/components/Experience.js';
 import { MovementSystem } from './engine/systems/MovementSystem.js';
 import { RenderSystem } from './engine/systems/RenderSystem.js';
 import { PlayerControlSystem } from './engine/systems/PlayerControlSystem.js';
 import { BulletSystem } from './engine/systems/BulletSystem.js';
 import { EnemySpawnerSystem } from './engine/systems/EnemySpawnerSystem.js';
 import { CollisionSystem } from './engine/systems/CollisionSystem.js';
+import { PickupSystem } from './engine/systems/PickupSystem.js';
 import { Input } from './input.js';
 
 const canvas = document.getElementById('game');
@@ -23,6 +25,7 @@ game.addSystem(new MovementSystem());
 game.addSystem(new BulletSystem());
 game.addSystem(new EnemySpawnerSystem());
 game.addSystem(new PlayerControlSystem(input));
+game.addSystem(new PickupSystem());
 game.addSystem(new CollisionSystem());
 game.addSystem(new RenderSystem());
 
@@ -30,7 +33,8 @@ const player = new Entity()
   .add(new Position(canvas.width / 2, canvas.height / 2))
   .add(new Velocity())
   .add(new Sprite(20, 'cyan'))
-  .add(new PlayerControlled());
+  .add(new PlayerControlled())
+  .add(new Experience());
 
 game.addEntity(player);
 

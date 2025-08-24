@@ -3,6 +3,8 @@ import { Sprite } from '../components/Sprite.js';
 import { Bullet } from '../components/Bullet.js';
 import { Enemy } from '../components/Enemy.js';
 import { PlayerControlled } from '../components/PlayerControlled.js';
+import { XPGem } from '../components/XPGem.js';
+import { Entity } from '../Entity.js';
 
 export class CollisionSystem {
   update() {
@@ -18,6 +20,11 @@ export class CollisionSystem {
         if (dist < bs.size / 2 + es.size / 2) {
           this.game.removeEntity(bullet);
           this.game.removeEntity(enemy);
+          const gem = new Entity()
+            .add(new Position(ep.x, ep.y))
+            .add(new Sprite(6, 'green'))
+            .add(new XPGem());
+          this.game.addEntity(gem);
           break;
         }
       }
