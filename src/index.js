@@ -182,7 +182,12 @@ function handleLevelUp(player) {
   options.forEach(ab => {
     const btn = document.createElement('button');
     btn.className = 'level-option';
-    btn.innerHTML = `<span class="icon">${ab.icon}</span><div class="info"><div class="name">${ab.name}</div><div class="desc">${ab.desc}</div></div>`;
+    btn.innerHTML = `
+      <span class="icon">${ab.icon}</span>
+      <div class="info">
+        <div class="name">${ab.name}</div>
+        <div class="desc">${ab.desc}</div>
+      </div>`;
     btn.onclick = () => {
       ab.apply(player);
       levelMenu.classList.add('hidden');
