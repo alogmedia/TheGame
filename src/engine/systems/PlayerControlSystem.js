@@ -24,19 +24,23 @@ export class PlayerControlSystem {
         const dx = target.x - p.x;
         const dy = target.y - p.y;
         const dist = Math.hypot(dx, dy);
+        let dirX = pc.dirX;
+        let dirY = pc.dirY;
         if (dist > 0) {
-          const dirX = dx / dist;
-          const dirY = dy / dist;
+          dirX = dx / dist;
+          dirY = dy / dist;
           v.x = dirX * pc.speed;
           v.y = dirY * pc.speed;
-          pc.cooldown -= dt;
-          if (pc.cooldown <= 0) {
-            this.spawnBullet(entity, dirX, dirY);
-            pc.cooldown = 1 / pc.fireRate;
-          }
+          pc.dirX = dirX;
+          pc.dirY = dirY;
         } else {
           v.x = 0;
           v.y = 0;
+        }
+        pc.cooldown -= dt;
+        if (pc.cooldown <= 0) {
+          this.spawnBullet(entity, dirX, dirY);
+          pc.cooldown = 1 / pc.fireRate;
         }
       }
     }
