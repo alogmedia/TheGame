@@ -8,7 +8,14 @@ export class BulletSystem {
         const b = entity.get(Bullet);
         const p = entity.get(Position);
         b.life -= dt;
-        if (b.life <= 0 || p.y < -10) {
+        const canvas = this.game.ctx.canvas;
+        if (
+          b.life <= 0 ||
+          p.x < -10 ||
+          p.y < -10 ||
+          p.x > canvas.width + 10 ||
+          p.y > canvas.height + 10
+        ) {
           this.game.removeEntity(entity);
         }
       }

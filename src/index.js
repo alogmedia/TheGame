@@ -16,7 +16,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const game = new Game(ctx);
 
-const input = new Input();
+const input = new Input(canvas);
 
 // Systems order matters: movement before render
 game.addSystem(new MovementSystem());
@@ -27,7 +27,7 @@ game.addSystem(new CollisionSystem());
 game.addSystem(new RenderSystem());
 
 const player = new Entity()
-  .add(new Position(canvas.width / 2, canvas.height - 50))
+  .add(new Position(canvas.width / 2, canvas.height / 2))
   .add(new Velocity())
   .add(new Sprite(20, 'cyan'))
   .add(new PlayerControlled());

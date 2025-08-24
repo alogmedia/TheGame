@@ -1,10 +1,14 @@
 export class Input {
-  constructor() {
-    this.keys = new Set();
-    window.addEventListener('keydown', e => this.keys.add(e.key.toLowerCase()));
-    window.addEventListener('keyup', e => this.keys.delete(e.key.toLowerCase()));
+  constructor(canvas) {
+    this.mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      this.mouse.x = e.clientX - rect.left;
+      this.mouse.y = e.clientY - rect.top;
+    });
   }
-  isDown(key) {
-    return this.keys.has(key.toLowerCase());
+
+  isDown() {
+    return false;
   }
 }
