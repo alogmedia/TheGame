@@ -1,0 +1,9 @@
+{
+  "name": "the-game",
+  "version": "0.1.0",
+  "description": "Starter codebase for a roguelike shoot 'em up browser game",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
