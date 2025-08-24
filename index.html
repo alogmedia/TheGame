@@ -34,6 +34,7 @@
       justify-content: center;
       align-items: center;
       background: rgba(0, 0, 0, 0.6);
+      z-index: 10;
     }
     .hidden { display: none; }
     button {
@@ -46,6 +47,30 @@
       font-size: 16px;
     }
     button:hover { background: #667; }
+    /* Start menu */
+    #start-menu .menu-box {
+      background: #2a2f40;
+      padding: 40px 60px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    #start-menu button, #start-menu select {
+      width: 200px;
+      font-size: 18px;
+      padding: 12px 24px;
+      border-radius: 8px;
+    }
+    #start-menu h1 { margin: 0 0 10px 0; }
+    .timer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      z-index: 5;
+    }
     /* Level up menu */
     #level-menu .level-box {
       background: #3a3f55;
@@ -85,19 +110,21 @@
 </head>
 <body>
   <div id="start-menu" class="overlay">
-    <h1>The Game</h1>
-    <div id="coins">Coins: 0</div>
-    <label>Stage:
-      <select id="stage-select">
-        <option value="15">15 min</option>
-        <option value="20">20 min</option>
-        <option value="30">30 min</option>
-      </select>
-    </label>
-    <button id="start-btn">Continue</button>
-    <button id="new-btn">New Game</button>
-    <button id="shop-btn">Shop</button>
-    <button id="scoreboard-btn">Scoreboard</button>
+    <div class="menu-box">
+      <h1>The Game</h1>
+      <div id="coins">Coins: 0</div>
+      <label>Stage:
+        <select id="stage-select">
+          <option value="15">15 min</option>
+          <option value="20">20 min</option>
+          <option value="30">30 min</option>
+        </select>
+      </label>
+      <button id="start-btn">Continue</button>
+      <button id="new-btn">New Game</button>
+      <button id="shop-btn">Shop</button>
+      <button id="scoreboard-btn">Scoreboard</button>
+    </div>
   </div>
   <div id="level-menu" class="overlay hidden">
     <div class="level-box">
@@ -122,6 +149,7 @@
     <ol id="score-list"></ol>
     <button id="score-close">Close</button>
   </div>
+  <div id="timer" class="timer"></div>
   <canvas id="game"></canvas>
   <script type="module" src="./src/index.js"></script>
 </body>

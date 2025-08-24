@@ -7,5 +7,7 @@ export class PlayerControlled {
     this.bulletSize = 4;
     this.bulletDamage = 1;
     this.shotCount = 1;
+    this.dirX = 1;
+    this.dirY = 0;
   }
 }

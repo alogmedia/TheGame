@@ -35,6 +35,7 @@ const hud = {
   stats: document.getElementById('stats'),
   coins: document.getElementById('coin-count'),
   score: document.getElementById('score'),
+  timer: document.getElementById('timer'),
 };
 
 const startMenu = document.getElementById('start-menu');

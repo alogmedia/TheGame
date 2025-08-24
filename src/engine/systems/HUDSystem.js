@@ -22,5 +22,11 @@ export class HUDSystem {
     if (this.hud.score !== undefined) {
       this.hud.score.textContent = `Score: ${this.game.score || 0}`;
     }
+    if (this.hud.timer && this.game.timeRemaining !== undefined) {
+      const t = Math.max(0, this.game.timeRemaining);
+      const m = Math.floor(t / 60).toString().padStart(2, '0');
+      const s = Math.floor(t % 60).toString().padStart(2, '0');
+      this.hud.timer.textContent = `${m}:${s}`;
+    }
   }
 }

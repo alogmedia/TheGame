@@ -17,9 +17,19 @@ export class StageSystem {
     this.duration = seconds;
     this.nextReaper = seconds;
     this.cleared = false;
+    if (this.game) {
+      this.game.stageDuration = seconds;
+      this.game.timeRemaining = seconds;
+    }
   }
 
   update() {
+    if (this.game) {
+      this.game.timeRemaining = Math.max(0, this.duration - this.game.elapsed);
+      if (this.game.stageDuration === undefined) {
+        this.game.stageDuration = this.duration;
+      }
+    }
     if (this.game.elapsed >= this.nextReaper) {
       if (!this.cleared) {
         for (const e of Array.from(this.game.entities)) {

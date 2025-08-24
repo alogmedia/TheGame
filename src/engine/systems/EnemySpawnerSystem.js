@@ -9,39 +9,27 @@ import { Health } from '../components/Health.js';
 const EMOJIS = ['👻', '👽', '😈', '💀', '🧟', '🤡', '👹', '👺'];
 
 export class EnemySpawnerSystem {
-  constructor(interval = 2) {
+  constructor(interval = 1) {
     this.interval = interval;
     this.timer = 0;
   }
   update(dt) {
     this.timer -= dt;
-    const spawnInterval = Math.max(0.5, this.interval - this.game.elapsed / 60);
+    const spawnInterval = Math.max(0.3, this.interval - this.game.elapsed / 90);
     if (this.timer <= 0) {
       this.timer = spawnInterval;
       const enemiesAlive = [...this.game.entities].filter(e => e.has(Enemy)).length;
       if (enemiesAlive >= 300) return;
+      const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
+      if (!player) return;
+      const pp = player.get(Position);
+      const canvas = this.game.ctx.canvas;
+      const radius = Math.max(canvas.width, canvas.height) / 2 + 40;
       const count = 1 + Math.floor(this.game.elapsed / 60);
       for (let i = 0; i < count; i++) {
-        const canvas = this.game.ctx.canvas;
-        const cam = this.game.camera || { x: 0, y: 0 };
-        const side = Math.floor(Math.random() * 4);
-        let x, y;
-        if (side === 0) { // top
-          x = cam.x + Math.random() * canvas.width;
-          y = cam.y - 20;
-        } else if (side === 1) { // bottom
-          x = cam.x + Math.random() * canvas.width;
-          y = cam.y + canvas.height + 20;
-        } else if (side === 2) { // left
-          x = cam.x - 20;
-          y = cam.y + Math.random() * canvas.height;
-        } else { // right
-          x = cam.x + canvas.width + 20;
-          y = cam.y + Math.random() * canvas.height;
-        }
-        const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
-        if (!player) return;
-        const pp = player.get(Position);
+        const angle = Math.random() * Math.PI * 2;
+        const x = pp.x + Math.cos(angle) * radius;
+        const y = pp.y + Math.sin(angle) * radius;
         const dx = pp.x - x;
         const dy = pp.y - y;
         const dist = Math.hypot(dx, dy) || 1;
