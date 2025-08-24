@@ -16,15 +16,21 @@ import { CollisionSystem } from './engine/systems/CollisionSystem.js';
 import { PickupSystem } from './engine/systems/PickupSystem.js';
 import { HUDSystem } from './engine/systems/HUDSystem.js';
 import { EnemyAISystem } from './engine/systems/EnemyAISystem.js';
+import { StageSystem } from './engine/systems/StageSystem.js';
 import { Input } from './input.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
 const game = new Game(ctx);
 const input = new Input(canvas);
 
 const hud = {
-  health: document.getElementById('health-fill'),
   xp: document.getElementById('xp-fill'),
   stats: document.getElementById('stats'),
 };
@@ -32,6 +38,11 @@ const hud = {
 const startMenu = document.getElementById('start-menu');
 const startBtn = document.getElementById('start-btn');
 const levelMenu = document.getElementById('level-menu');
+const stageSelect = document.getElementById('stage-select');
+const coinsDisplay = document.getElementById('coins');
+
+let coins = parseInt(localStorage.getItem('coins') || '0');
+coinsDisplay.textContent = `Coins: ${coins}`;
 
 function shuffle(arr) {
   return arr.sort(() => Math.random() - 0.5);
@@ -61,6 +72,12 @@ function handleLevelUp(player) {
   });
 }
 
+game.onStageComplete = () => {
+  coins += 100;
+  coinsDisplay.textContent = `Coins: ${coins}`;
+  localStorage.setItem('coins', coins);
+};
+
 game.onGameOver = () => {
   startBtn.textContent = 'Restart';
   startMenu.classList.remove('hidden');
@@ -69,6 +86,8 @@ game.onGameOver = () => {
 
 // Systems order
 game.addSystem(new EnemyAISystem());
+const stageSystem = new StageSystem();
+game.addSystem(stageSystem);
 game.addSystem(new PlayerControlSystem(input));
 game.addSystem(new MovementSystem());
 game.addSystem(new BulletSystem());
@@ -81,7 +100,7 @@ game.addSystem(new RenderSystem());
 const player = new Entity()
   .add(new Position(canvas.width / 2, canvas.height / 2))
   .add(new Velocity())
-  .add(new Sprite(20, 'cyan'))
+  .add(new Sprite(30, null, '🧍'))
   .add(new PlayerControlled())
   .add(new Experience())
   .add(new Health(100))
@@ -93,6 +112,8 @@ startBtn.addEventListener('click', () => {
   if (startBtn.textContent === 'Restart') {
     window.location.reload();
   } else {
+    const duration = parseInt(stageSelect.value) * 60;
+    stageSystem.setDuration(duration);
     startMenu.classList.add('hidden');
     game.start();
   }

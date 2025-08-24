@@ -1,5 +1,7 @@
 export class Enemy {
-  constructor() {
+  constructor(damage = 10, persistent = false) {
     this.tag = 'enemy';
+    this.damage = damage;
+    this.persistent = persistent;
   }
 }

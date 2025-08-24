@@ -25,12 +25,25 @@ export class CollisionSystem {
         if (dist < bs.size / 2 + es.size / 2) {
           if (playerStats) playerStats.damageDone += bullet.get(Bullet).damage;
           this.game.removeEntity(bullet);
-          this.game.removeEntity(enemy);
-          const gem = new Entity()
-            .add(new Position(ep.x, ep.y))
-            .add(new Sprite(6, 'green'))
-            .add(new XPGem());
-          this.game.addEntity(gem);
+          if (enemy.has(Health)) {
+            const eh = enemy.get(Health);
+            eh.current -= bullet.get(Bullet).damage;
+            if (eh.current <= 0) {
+              this.game.removeEntity(enemy);
+              const gem = new Entity()
+                .add(new Position(ep.x, ep.y))
+                .add(new Sprite(6, 'green'))
+                .add(new XPGem());
+              this.game.addEntity(gem);
+            }
+          } else {
+            this.game.removeEntity(enemy);
+            const gem = new Entity()
+              .add(new Position(ep.x, ep.y))
+              .add(new Sprite(6, 'green'))
+              .add(new XPGem());
+            this.game.addEntity(gem);
+          }
           break;
         }
       }
@@ -45,7 +58,8 @@ export class CollisionSystem {
       const es = enemy.get(Sprite);
       const dist = Math.hypot(pp.x - ep.x, pp.y - ep.y);
       if (dist < ps.size / 2 + es.size / 2) {
-        const damage = 10;
+        const ec = enemy.get(Enemy);
+        const damage = ec.damage;
         if (player.has(Health)) {
           const health = player.get(Health);
           health.current -= damage;
@@ -54,7 +68,9 @@ export class CollisionSystem {
             if (this.game.onGameOver) this.game.onGameOver();
           }
         }
-        this.game.removeEntity(enemy);
+        if (!ec.persistent) {
+          this.game.removeEntity(enemy);
+        }
       }
     }
   }

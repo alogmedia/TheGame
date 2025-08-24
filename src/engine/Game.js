@@ -5,6 +5,7 @@ export class Game {
     this.systems = [];
     this.lastTime = 0;
     this.running = false;
+    this.elapsed = 0;
   }
   addEntity(entity) {
     this.entities.add(entity);
@@ -25,6 +26,7 @@ export class Game {
     if (!this.running) return;
     const dt = (time - this.lastTime) / 1000;
     this.lastTime = time;
+    this.elapsed += dt;
     for (const system of this.systems) {
       system.update(dt);
     }
