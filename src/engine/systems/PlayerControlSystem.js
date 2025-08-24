@@ -12,33 +12,38 @@ export class PlayerControlSystem {
 
   update(dt) {
     for (const entity of this.game.entities) {
-      if (entity.has(PlayerControlled) && entity.has(Velocity)) {
+      if (entity.has(PlayerControlled) && entity.has(Velocity) && entity.has(Position)) {
         const pc = entity.get(PlayerControlled);
         const v = entity.get(Velocity);
-        v.x = 0; v.y = 0;
-        if (this.input.isDown('w') || this.input.isDown('arrowup')) v.y -= pc.speed;
-        if (this.input.isDown('s') || this.input.isDown('arrowdown')) v.y += pc.speed;
-        if (this.input.isDown('a') || this.input.isDown('arrowleft')) v.x -= pc.speed;
-        if (this.input.isDown('d') || this.input.isDown('arrowright')) v.x += pc.speed;
-        const mag = Math.hypot(v.x, v.y);
-        if (mag > 0) {
-          v.x = (v.x / mag) * pc.speed;
-          v.y = (v.y / mag) * pc.speed;
-        }
-        pc.cooldown -= dt;
-        if (pc.cooldown <= 0) {
-          this.spawnBullet(entity);
-          pc.cooldown = 1 / pc.fireRate;
+        const p = entity.get(Position);
+        const target = this.input.mouse;
+        const dx = target.x - p.x;
+        const dy = target.y - p.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 0) {
+          const dirX = dx / dist;
+          const dirY = dy / dist;
+          v.x = dirX * pc.speed;
+          v.y = dirY * pc.speed;
+          pc.cooldown -= dt;
+          if (pc.cooldown <= 0) {
+            this.spawnBullet(entity, dirX, dirY);
+            pc.cooldown = 1 / pc.fireRate;
+          }
+        } else {
+          v.x = 0;
+          v.y = 0;
         }
       }
     }
   }
 
-  spawnBullet(player) {
+  spawnBullet(player, dirX, dirY) {
     const p = player.get(Position);
+    const speed = 400;
     const bullet = new Entity()
-      .add(new Position(p.x, p.y - 15))
-      .add(new Velocity(0, -400))
+      .add(new Position(p.x + dirX * 15, p.y + dirY * 15))
+      .add(new Velocity(dirX * speed, dirY * speed))
       .add(new Sprite(4, 'yellow'))
       .add(new Bullet());
     this.game.addEntity(bullet);
