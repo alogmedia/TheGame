@@ -9,43 +9,45 @@ import { Health } from '../components/Health.js';
 const EMOJIS = ['👻', '👽', '😈', '💀', '🧟', '🤡', '👹', '👺'];
 
 export class EnemySpawnerSystem {
-  constructor(interval = 2) {
+  constructor(interval = 0.8) {
     this.interval = interval;
     this.timer = 0;
   }
   update(dt) {
     this.timer -= dt;
-    const spawnInterval = Math.max(0.5, this.interval - this.game.elapsed / 60);
+    const spawnInterval = Math.max(0.2, this.interval - this.game.elapsed / 120);
     if (this.timer <= 0) {
       this.timer = spawnInterval;
       const enemiesAlive = [...this.game.entities].filter(e => e.has(Enemy)).length;
       if (enemiesAlive >= 300) return;
-      const count = 1 + Math.floor(this.game.elapsed / 60);
+      const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
+      if (!player) return;
+      const pp = player.get(Position);
+      const canvas = this.game.ctx.canvas;
+      const halfW = canvas.width / 2;
+      const halfH = canvas.height / 2;
+      const margin = 40;
+      const count = 1 + Math.floor(this.game.elapsed / 45);
       for (let i = 0; i < count; i++) {
-        const canvas = this.game.ctx.canvas;
-        const cam = this.game.camera || { x: 0, y: 0 };
         const side = Math.floor(Math.random() * 4);
         let x, y;
         if (side === 0) { // top
-          x = cam.x + Math.random() * canvas.width;
-          y = cam.y - 20;
+          x = pp.x - halfW + Math.random() * canvas.width;
+          y = pp.y - halfH - margin;
         } else if (side === 1) { // bottom
-          x = cam.x + Math.random() * canvas.width;
-          y = cam.y + canvas.height + 20;
+          x = pp.x - halfW + Math.random() * canvas.width;
+          y = pp.y + halfH + margin;
         } else if (side === 2) { // left
-          x = cam.x - 20;
-          y = cam.y + Math.random() * canvas.height;
+          x = pp.x - halfW - margin;
+          y = pp.y - halfH + Math.random() * canvas.height;
         } else { // right
-          x = cam.x + canvas.width + 20;
-          y = cam.y + Math.random() * canvas.height;
+          x = pp.x + halfW + margin;
+          y = pp.y - halfH + Math.random() * canvas.height;
         }
-        const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
-        if (!player) return;
-        const pp = player.get(Position);
         const dx = pp.x - x;
         const dy = pp.y - y;
         const dist = Math.hypot(dx, dy) || 1;
-        const speed = 30 + Math.random() * 30;
+        const speed = 40 + Math.random() * 40;
         const health = 1 + Math.floor(this.game.elapsed / 30);
         const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
         const enemy = new Entity()
