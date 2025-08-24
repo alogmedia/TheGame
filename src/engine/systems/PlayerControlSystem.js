@@ -39,13 +39,20 @@ export class PlayerControlSystem {
   }
 
   spawnBullet(player, dirX, dirY) {
+    const pc = player.get(PlayerControlled);
     const p = player.get(Position);
-    const speed = 400;
-    const bullet = new Entity()
-      .add(new Position(p.x + dirX * 15, p.y + dirY * 15))
-      .add(new Velocity(dirX * speed, dirY * speed))
-      .add(new Sprite(4, 'yellow'))
-      .add(new Bullet());
-    this.game.addEntity(bullet);
+    const baseAngle = Math.atan2(dirY, dirX);
+    for (let i = 0; i < pc.shotCount; i++) {
+      const spread = (i - (pc.shotCount - 1) / 2) * 0.1;
+      const angle = baseAngle + spread;
+      const vx = Math.cos(angle) * pc.bulletSpeed;
+      const vy = Math.sin(angle) * pc.bulletSpeed;
+      const bullet = new Entity()
+        .add(new Position(p.x + Math.cos(angle) * 15, p.y + Math.sin(angle) * 15))
+        .add(new Velocity(vx, vy))
+        .add(new Sprite(pc.bulletSize, 'yellow'))
+        .add(new Bullet(2, pc.bulletDamage));
+      this.game.addEntity(bullet);
+    }
   }
 }

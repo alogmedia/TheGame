@@ -18,6 +18,7 @@ export class Game {
   }
   start() {
     this.running = true;
+    this.lastTime = performance.now();
     requestAnimationFrame(this.loop.bind(this));
   }
   loop(time) {
