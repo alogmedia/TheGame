@@ -9,12 +9,13 @@ import { Health } from '../components/Health.js';
 const EMOJIS = ['👻', '👽', '😈', '💀', '🧟', '🤡', '👹', '👺'];
 
 export class EnemySpawnerSystem {
-  constructor(interval = 1) {
+  constructor(interval = 0.8) {
     this.interval = interval;
     this.timer = 0;
   }
   update(dt) {
     this.timer -= dt;
+    const spawnInterval = Math.max(0.2, this.interval - this.game.elapsed / 120);
     const spawnInterval = Math.max(0.3, this.interval - this.game.elapsed / 90);
     if (this.timer <= 0) {
       this.timer = spawnInterval;
@@ -24,16 +25,30 @@ export class EnemySpawnerSystem {
       if (!player) return;
       const pp = player.get(Position);
       const canvas = this.game.ctx.canvas;
-      const radius = Math.max(canvas.width, canvas.height) / 2 + 40;
-      const count = 1 + Math.floor(this.game.elapsed / 60);
+      const halfW = canvas.width / 2;
+      const halfH = canvas.height / 2;
+      const margin = 40;
+      const count = 1 + Math.floor(this.game.elapsed / 45);
       for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const x = pp.x + Math.cos(angle) * radius;
-        const y = pp.y + Math.sin(angle) * radius;
+        const side = Math.floor(Math.random() * 4);
+        let x, y;
+        if (side === 0) { // top
+          x = pp.x - halfW + Math.random() * canvas.width;
+          y = pp.y - halfH - margin;
+        } else if (side === 1) { // bottom
+          x = pp.x - halfW + Math.random() * canvas.width;
+          y = pp.y + halfH + margin;
+        } else if (side === 2) { // left
+          x = pp.x - halfW - margin;
+          y = pp.y - halfH + Math.random() * canvas.height;
+        } else { // right
+          x = pp.x + halfW + margin;
+          y = pp.y - halfH + Math.random() * canvas.height;
+        }
         const dx = pp.x - x;
         const dy = pp.y - y;
         const dist = Math.hypot(dx, dy) || 1;
-        const speed = 30 + Math.random() * 30;
+        const speed = 40 + Math.random() * 40;
         const health = 1 + Math.floor(this.game.elapsed / 30);
         const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
         const enemy = new Entity()

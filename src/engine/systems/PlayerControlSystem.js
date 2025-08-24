@@ -26,7 +26,7 @@ export class PlayerControlSystem {
         const dist = Math.hypot(dx, dy);
         let dirX = pc.dirX;
         let dirY = pc.dirY;
-        if (dist > 0) {
+        if (dist > 1e-3) {
           dirX = dx / dist;
           dirY = dy / dist;
           v.x = dirX * pc.speed;
@@ -37,9 +37,11 @@ export class PlayerControlSystem {
           v.x = 0;
           v.y = 0;
         }
-        pc.cooldown -= dt;
+        pc.cooldown = Math.max(0, pc.cooldown - dt);
         if (pc.cooldown <= 0) {
-          this.spawnBullet(entity, dirX, dirY);
+          const ndx = dirX || pc.dirX || 1;
+          const ndy = dirY || pc.dirY || 0;
+          this.spawnBullet(entity, ndx, ndy);
           pc.cooldown = 1 / pc.fireRate;
         }
       }
