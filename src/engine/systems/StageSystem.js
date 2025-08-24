@@ -35,20 +35,21 @@ export class StageSystem {
 
   spawnReaper() {
     const canvas = this.game.ctx.canvas;
+    const cam = this.game.camera || { x: 0, y: 0 };
     const side = Math.floor(Math.random() * 4);
     let x, y;
     if (side === 0) { // top
-      x = Math.random() * canvas.width;
-      y = -40;
+      x = cam.x + Math.random() * canvas.width;
+      y = cam.y - 40;
     } else if (side === 1) { // bottom
-      x = Math.random() * canvas.width;
-      y = canvas.height + 40;
+      x = cam.x + Math.random() * canvas.width;
+      y = cam.y + canvas.height + 40;
     } else if (side === 2) { // left
-      x = -40;
-      y = Math.random() * canvas.height;
+      x = cam.x - 40;
+      y = cam.y + Math.random() * canvas.height;
     } else { // right
-      x = canvas.width + 40;
-      y = Math.random() * canvas.height;
+      x = cam.x + canvas.width + 40;
+      y = cam.y + Math.random() * canvas.height;
     }
     const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
     if (!player) return;

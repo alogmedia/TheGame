@@ -18,23 +18,26 @@ export class EnemySpawnerSystem {
     const spawnInterval = Math.max(0.5, this.interval - this.game.elapsed / 60);
     if (this.timer <= 0) {
       this.timer = spawnInterval;
+      const enemiesAlive = [...this.game.entities].filter(e => e.has(Enemy)).length;
+      if (enemiesAlive >= 300) return;
       const count = 1 + Math.floor(this.game.elapsed / 60);
       for (let i = 0; i < count; i++) {
         const canvas = this.game.ctx.canvas;
+        const cam = this.game.camera || { x: 0, y: 0 };
         const side = Math.floor(Math.random() * 4);
         let x, y;
         if (side === 0) { // top
-          x = Math.random() * canvas.width;
-          y = -20;
+          x = cam.x + Math.random() * canvas.width;
+          y = cam.y - 20;
         } else if (side === 1) { // bottom
-          x = Math.random() * canvas.width;
-          y = canvas.height + 20;
+          x = cam.x + Math.random() * canvas.width;
+          y = cam.y + canvas.height + 20;
         } else if (side === 2) { // left
-          x = -20;
-          y = Math.random() * canvas.height;
+          x = cam.x - 20;
+          y = cam.y + Math.random() * canvas.height;
         } else { // right
-          x = canvas.width + 20;
-          y = Math.random() * canvas.height;
+          x = cam.x + canvas.width + 20;
+          y = cam.y + Math.random() * canvas.height;
         }
         const player = [...this.game.entities].find(e => e.has(PlayerControlled) && e.has(Position));
         if (!player) return;

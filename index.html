@@ -94,7 +94,10 @@
         <option value="30">30 min</option>
       </select>
     </label>
-    <button id="start-btn">Start</button>
+    <button id="start-btn">Continue</button>
+    <button id="new-btn">New Game</button>
+    <button id="shop-btn">Shop</button>
+    <button id="scoreboard-btn">Scoreboard</button>
   </div>
   <div id="level-menu" class="overlay hidden">
     <div class="level-box">
@@ -106,6 +109,18 @@
   <div id="hud">
     <div class="bar"><div id="xp-fill" class="fill"></div></div>
     <div id="stats"></div>
+    <div id="coin-count"></div>
+    <div id="score"></div>
+  </div>
+  <div id="shop-menu" class="overlay hidden">
+    <h2>Shop</h2>
+    <div id="shop-items"></div>
+    <button id="shop-close">Close</button>
+  </div>
+  <div id="scoreboard-menu" class="overlay hidden">
+    <h2>Scoreboard</h2>
+    <ol id="score-list"></ol>
+    <button id="score-close">Close</button>
   </div>
   <canvas id="game"></canvas>
   <script type="module" src="./src/index.js"></script>

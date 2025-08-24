@@ -16,7 +16,11 @@ export class PlayerControlSystem {
         const pc = entity.get(PlayerControlled);
         const v = entity.get(Velocity);
         const p = entity.get(Position);
-        const target = this.input.mouse;
+        const cam = this.game.camera || { x: 0, y: 0 };
+        const target = {
+          x: this.input.mouse.x + cam.x,
+          y: this.input.mouse.y + cam.y
+        };
         const dx = target.x - p.x;
         const dy = target.y - p.y;
         const dist = Math.hypot(dx, dy);
